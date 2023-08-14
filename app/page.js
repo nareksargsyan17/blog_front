@@ -1,15 +1,12 @@
-"use client"
-import { Layout } from "antd";
-import HeaderBar from "../components/header/HeaderBar";
 import MainBar from "../components/main/MainBar";
 
+export const metadata = {
+  title: 'Blog',
+}
 
 function Home() {
   return (
-      <Layout>
-        <HeaderBar/>
-        <MainBar/>
-      </Layout>
+      <MainBar/>
   )
 }
 

@@ -3,9 +3,6 @@ import {
   postRegistrationRequest,
   postRegistrationSuccess,
   postRegistrationFailure,
-  getVerificationRequest,
-  getVerificationSuccess,
-  getVerificationFailure,
   postLoginRequest,
   postLoginSuccess,
   postLoginFailure,
@@ -21,9 +18,6 @@ const defaultState = {
   isPostRegistrationRequest: false,
   isPostRegistrationSuccess: false,
   isPostRegistrationFailure: false,
-  isGetVerificationRequest: false,
-  isGetVerificationSuccess: false,
-  isGetVerificationFailure: false,
   isPostLoginRequest: false,
   isPostLoginSuccess: false,
   isPostLoginFailure: false,
@@ -36,7 +30,7 @@ const defaultState = {
   userData: {},
   successMessage: "",
   errorMessage: '',
-  role: null
+  user: null
 }
 
 const reducer = handleActions(
@@ -67,34 +61,6 @@ const reducer = handleActions(
       isPostRegistrationRequest: false,
       isPostRegistrationSuccess: false,
       isPostRegistrationFailure: true,
-      errorMessage: payload
-    }),
-    [getVerificationRequest]: (
-      state
-    ) => ({
-      ...state,
-      isGetVerificationRequest: true,
-      isGetVerificationSuccess: false,
-      isGetVerificationFailure: false,
-    }),
-    [getVerificationSuccess]: (
-      state,
-      { payload },
-    ) => ({
-      ...state,
-      isGetVerificationRequest: false,
-      isGetVerificationSuccess: true,
-      isGetVerificationFailure: false,
-      successMessage: payload,
-    }),
-    [getVerificationFailure]: (
-      state,
-      { payload }
-    ) => ({
-      ...state,
-      isGetVerificationRequest: false,
-      isGetVerificationSuccess: false,
-      isGetVerificationFailure: true,
       errorMessage: payload
     }),
     [postLoginRequest]: (
@@ -169,7 +135,7 @@ const reducer = handleActions(
       isGetUserRequest: false,
       isGetUserSuccess: true,
       isGetUserFailure: false,
-      role: payload,
+      user: payload,
     }),
     [getUserFailure]: (
       state,

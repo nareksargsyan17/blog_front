@@ -1,48 +1,59 @@
-import { Layout } from "antd";
+"use client"
+import {Avatar, Button, Card, Empty, Layout, Skeleton, Space, Spin} from "antd";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {getPostsRequest} from "../../redux/post/actions";
 import Posts from "./Posts";
-const { Content } = Layout;
+import {AreaChartOutlined, LoadingOutlined} from "@ant-design/icons";
+import Error from "../../app/error";
+import {ErrorBoundary} from "react-error-boundary";
+import contentStyle from "../../theme/contentStyle";
+import SharePost from "./SharePost";
 
-const contentStyle = {
-  textAlign: 'center',
-  minHeight: 120,
-  lineHeight: '120px',
-  color: 'rgb(25 25 25)',
-  backgroundColor: 'rgb(243 242 239)',
-  width: "100%",
-  padding: "0 30%"
-};
+const {Content} = Layout;
+
 
 export default function MainBar() {
   const {
-    isGetPostsRequest,
     isGetPostsSuccess,
     isGetPostsFailure,
     postsData,
-  } = useSelector(state => state.posts)
-  
+  } = useSelector(state => state.posts);
   const dispatch = useDispatch();
-  const [posts, setPosts] = useState(postsData)
-  
+  const [posts, setPosts] = useState(postsData);
+  const [token, setToken] = useState("");
+
   useEffect(() => {
-    dispatch(getPostsRequest(1))
+    dispatch(getPostsRequest(1));
+    if (typeof window !== 'undefined'  && window.localStorage) {
+      let token = localStorage.getItem("token");
+      setToken(token)
+    }
   }, [dispatch])
-  
+
   useEffect(() => {
     if (isGetPostsSuccess) {
       setPosts(postsData)
+    } else if (isGetPostsFailure) {
+      throw new Error("")
     }
-  }, [isGetPostsSuccess, postsData])
-
-  console.log(posts)
-  
+  }, [isGetPostsFailure, isGetPostsSuccess, postsData])
   return (
-    <Content style={contentStyle}>
-      {
-        posts.map(post => <Posts key={post.id} post={post} />)
-      }
-    </Content>
+    <ErrorBoundary fallback={<Error/>}>
+      <Content style={contentStyle}>
+        {
+          token ? (
+            <SharePost/>
+          ) : null
+        }
+        {
+          isGetPostsSuccess ? (
+            posts.length > 0 ? posts.map(post => <Posts key={post.id} post={post}/>) : <Empty/>
+          ) : (
+            <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>
+          )
+        }
+      </Content>
+    </ErrorBoundary>
   )
 }

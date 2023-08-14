@@ -36,23 +36,6 @@ function* registration(action) {
   }
 }
 
-function* verification(action) {
-  try {
-    const {id, token} = action.payload
-    const response = yield instance({
-      method: "get",
-      url: `/guest/users/verify_email/${id}/${token}`,
-    })
-    console.log(response)
-    if (response.status === 200) {
-      yield put(getVerificationSuccess(response.data.successMessage));
-    } else {
-      yield put(getVerificationFailure(response.data.message));
-    }
-  } catch (error) {
-    yield put(getVerificationFailure(error.message));
-  }
-}
 
 
 function* login(action) {
@@ -60,7 +43,7 @@ function* login(action) {
     console.log(action)
     const response = yield instance({
       method: "post",
-      url: "/guest/users/login",
+      url: "/guest/user/login",
       data : action.payload
     })
     console.log(response)
@@ -76,13 +59,11 @@ function* login(action) {
 
 function* changePassword(action) {
   try {
-    console.log(action)
     const response = yield instance({
       method: "put",
       url: "/user/users/change_pass",
       headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer ' + action.payload.token
       },
       data : action.payload.data
     })
@@ -100,7 +81,7 @@ function* getUser() {
   try {
     const response = yield instance({
       method: "get",
-      url: "/user/users/get/user",
+      url: "/auth/user/get/user",
     })
     console.log(response)
     if (response.status === 200) {
@@ -115,7 +96,6 @@ function* getUser() {
 
 export default function* authSaga() {
   yield takeEvery(postRegistrationRequest, registration);
-  yield takeEvery(getVerificationRequest, verification);
   yield takeEvery(postLoginRequest, login);
   yield takeEvery(changePasswordRequest, changePassword);
   yield takeEvery(getUserRequest, getUser);
