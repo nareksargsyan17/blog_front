@@ -21,14 +21,14 @@ function RootLayout({children}) {
     <html lang="en">
     <body>
     <StyledComponentsRegistry>
-      <ConfigProvider theme={theme}>
-        <Layout>
-          <HeaderBar/>
-          <Provider store={store}>
+      <Provider store={store}>
+        <ConfigProvider theme={theme}>
+          <Layout>
+            <HeaderBar/>
             {children}
-          </Provider>
-        </Layout>
-      </ConfigProvider>
+          </Layout>
+        </ConfigProvider>
+      </Provider>
     </StyledComponentsRegistry>
     </body>
     </html>

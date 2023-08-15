@@ -109,7 +109,7 @@ const SignUp = () => {
             style={{
               textAlign: "center",
               width: "100%",
-              background: "transparent",
+              background: "white",
               padding: "40px 100px 40px 0",
               boxShadow: "1px 1px 10px 0px rgba(0,0,0,0.75)"
             }}

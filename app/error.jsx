@@ -3,7 +3,6 @@
 import {Button, Result} from "antd";
 
 export default function Error({ error, reset }) {
-  console.log("eee")
   return (
     <Result
       status="500"

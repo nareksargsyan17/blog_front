@@ -3,7 +3,7 @@ import { Button, Form, Input, Checkbox, Typography, notification, Spin } from "a
 import {LoadingOutlined, LockOutlined, UserOutlined} from "@ant-design/icons";
 import Layout, {Content} from "antd/es/layout/layout";
 import { useDispatch, useSelector } from "react-redux";
-import { postLoginRequest } from "../../redux/auth/actions";
+import {logged, postLoginRequest} from "../../redux/auth/actions";
 import {useEffect} from "react";
 import { usePrevious } from "@react-hooks-library/core";
 import Link from "next/link";
@@ -26,10 +26,9 @@ export default function SignInComp() {
 
 
   useEffect(() => {
-
     if (isPostLoginSuccess && prevSuccess === false) {
       localStorage.setItem("token", userData.token);
-      let token = localStorage.getItem("token")
+      let token = localStorage.getItem("token");
       instance.defaults.headers.common.Authorization = `Bearer ${token}`;
       router.replace("/");
     }
@@ -42,7 +41,6 @@ export default function SignInComp() {
   }, [dispatch, isPostLoginFailure, isPostLoginSuccess, prevFailure, prevSuccess, router, userData]);
 
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
     dispatch(postLoginRequest(values));
   };
 

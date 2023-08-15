@@ -15,3 +15,5 @@ export const changePasswordFailure = createAction("CHANGE_PASSWORD_FAILURE")
 export const getUserRequest = createAction("GET_USER_REQUEST")
 export const getUserSuccess = createAction("GET_USER_SUCCESS")
 export const getUserFailure = createAction("GET_USER_FAILURE")
+
+export const changeUserData = createAction("CHANGE_USER_DATA")

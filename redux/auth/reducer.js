@@ -11,7 +11,7 @@ import {
   changePasswordFailure,
   getUserRequest,
   getUserSuccess,
-  getUserFailure
+  getUserFailure, logged, changeUserData
 } from './actions'
 
 const defaultState = {
@@ -27,6 +27,7 @@ const defaultState = {
   isGetUserRequest: false,
   isGetUserSuccess: false,
   isGetUserFailure: false,
+  isLogged: "",
   userData: {},
   successMessage: "",
   errorMessage: '',
@@ -35,6 +36,13 @@ const defaultState = {
 
 const reducer = handleActions(
   {
+    [changeUserData]: (
+      state,
+      {payload}
+    ) => ({
+      ...state,
+      user: payload
+    }),
     [postRegistrationRequest]: (
       state
     ) => ({
