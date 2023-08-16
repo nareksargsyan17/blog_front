@@ -11,7 +11,8 @@ import {
   changePasswordFailure,
   getUserRequest,
   getUserSuccess,
-  getUserFailure, logged, changeUserData
+  getUserFailure,
+    changeUserData
 } from './actions'
 
 const defaultState = {

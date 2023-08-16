@@ -1,15 +1,19 @@
 "use client"
 import {useDispatch, useSelector} from "react-redux";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {likePostsRequest} from "../../redux/post/actions";
-import {Avatar, Badge, Card, Layout, Space, Typography} from "antd";
+import {Avatar, Badge, Button, Card, Form, Input, Layout, Space, Typography} from "antd";
 import {CommentOutlined, LikeOutlined} from "@ant-design/icons";
 import contentStyle from "../../theme/contentStyle";
 import {getUserRequest} from "../../redux/auth/actions";
+import checkTime from "../../checkTime/checkTime";
+import {getCommentsRequest} from "../../redux/comment/actions";
+import AddComment from "../comment/AddComment";
+import Comments from "../comment/Comments";
 
 const {Meta} = Card;
-const {Text} = Typography;
+const {Text, Title} = Typography;
 const {Content} = Layout;
 
 export default function PostPage() {
@@ -18,14 +22,35 @@ export default function PostPage() {
   } = useSelector(state => state.auth);
   const {
     post,
-    isLikePostsSuccess
+    commentCount
   } = useSelector(state => state.posts);
+  const {
+    comments
+  } = useSelector(state => state.comments);
   const dispatch = useDispatch();
-  const [likes, setLike] = useState(post.likes);
+  const [likes, setLike] = useState([]);
+  const [allComments, setComment] = useState([])
   const router = useRouter();
 
+  //TODO check
+  useEffect(() => {
+    setLike(post.likes);
+    setComment(comments)
+  }, [comments, post]);
 
-  console.log(post, user)
+  useEffect(() => {
+      dispatch(getCommentsRequest({postId: post.id, parentId: null}))
+  }, [dispatch, post?.id])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let token = localStorage.getItem("token");
+      if (token && !user) {
+        dispatch(getUserRequest());
+      }
+    }
+  },[dispatch, user])
+
   const likePost = () => {
     if (user?.id) {
       dispatch(likePostsRequest(post.id))
@@ -39,28 +64,13 @@ export default function PostPage() {
     }
   }
 
-  function checkTime(time) {
-    if ((time / 1000 / 60 / 60 / 24 / 365) > 1 && (time / 1000 / 60 / 60 / 24 / 365) < 365) {
-      return `${parseInt((time / 1000 / 60 / 60 / 24 / 365))} years`
-    } else if ((time / 1000 / 60 / 60 / 24) > 1 && (time / 1000 / 60 / 60 / 24) < 24) {
-      return `${parseInt((time / 1000 / 60 / 60 / 24))} days`
-    } else if ((time / 1000 / 60 / 60) > 1 && (time / 1000 / 60 / 60) < 60) {
-      return `${parseInt((time / 1000 / 60 / 60))} hours`
-    } else if ((time / 1000 / 60) > 1 && (time / 1000 / 60) < 60) {
-      return `${parseInt((time / 1000 / 60))} minutes`
-    } else if ((time / 1000) > 1 && (time / 1000) < 60) {
-      return `${parseInt((time / 1000))} seconds`
-    } else if (time < 1000) {
-      return `${1} second`
-    }
-  }
 
   return (
     <Content style={contentStyle}>
       <Card
         style={{
           width: "100%",
-          margin: "20px 0",
+          marginTop: "20px",
           textAlign: "left"
         }}
         title={
@@ -94,7 +104,7 @@ export default function PostPage() {
               color: likes.find(like => like.id === user?.id) ? "blue" : "gray"
             }}/>
           </Badge>,
-          <Badge count={post.comments.length} key="like" size="middle" offset={[10, 0]} color="#63a4ff">
+          <Badge count={commentCount} key="like" size="middle" offset={[10, 0]} color="#63a4ff">
             <CommentOutlined style={{fontSize: "20px"}}/>
           </Badge>,
         ]}
@@ -104,6 +114,17 @@ export default function PostPage() {
           description={post.content.length > 30 ? post.content.slice(0, 30) + "..." : post.content}
         />
       </Card>
+      <Space direction="vertical" style={{background: "white", padding: "10px 20px"}} className="comment-bar">
+        {
+          user ? (
+              <AddComment user={user} parentId={null}/>
+          ) : null
+        }
+        {
+              allComments.map((comment) => {
+                return <Comments key={comment.comment.id} comment={comment} user={user}/>})
+        }
+      </Space>
     </Content>
   )
 }

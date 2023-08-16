@@ -21,3 +21,7 @@ export const likePostsFailure = createAction("LIKE_POSTS_FAILURE")
 export const getPostByIdRequest = createAction("GET_POST_BY_ID_REQUEST")
 export const getPostByIdSuccess = createAction("GET_POST_BY_ID_SUCCESS")
 export const getPostByIdFailure = createAction("GET_POST_BY_ID_FAILURE")
+
+export const changePostCommentCount = createAction("CHANGE_COMMENT_COUNT")
+
+export const changePost = createAction("CHANGE_POST")

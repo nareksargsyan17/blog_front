@@ -67,7 +67,7 @@ const SignUp = () => {
     isPostRegistrationFailure,
     errorMessage
   } = useSelector(state => state.auth);
-  const prevSucces = usePrevious(isPostRegistrationSuccess);
+  const prevSuccess = usePrevious(isPostRegistrationSuccess);
   const prevFailure = usePrevious(isPostRegistrationFailure);
 
   useEffect(() => {
@@ -90,7 +90,7 @@ const SignUp = () => {
   return (
     <Content style={contentStyle}>
       {
-        isPostRegistrationSuccess && prevSucces === false ? (
+        isPostRegistrationSuccess && prevSuccess === false ? (
           <Skeleton active loading={isPostRegistrationRequest}>
             <Result
               status="success"

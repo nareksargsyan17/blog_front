@@ -37,11 +37,11 @@ export default function MainBar() {
     if (typeof window !== 'undefined') {
       let token = localStorage.getItem("token");
       setToken(token);
-      if (token) {
+      if (token && !user) {
         dispatch(getUserRequest());
       }
     }
-  }, [dispatch, token]);
+  }, [dispatch, user]);
 
   useEffect(() => {
     if (isGetPostsSuccess && prevGetSuccess === false) {
@@ -51,7 +51,7 @@ export default function MainBar() {
     }
   }, [isGetPostsFailure, isGetPostsSuccess, postsData, prevGetSuccess]);
 
-
+  console.log("posts-----", posts)
   return (
     <ErrorBoundary fallback={<Error/>}>
       <Content style={contentStyle}>

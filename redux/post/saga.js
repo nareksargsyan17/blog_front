@@ -73,11 +73,13 @@ function* uploadPostImage({ payload }) {
 }
 
 function* likePost({ payload }) {
+  console.log(payload)
   try {
     const response = yield instance({
       method: "post",
       url: `/auth/like/add/${payload}`
     })
+    console.log(response)
     if (response.status === 200) {
       yield put(likePostsSuccess(response.data.successMessage));
     } else {
@@ -91,10 +93,12 @@ function* likePost({ payload }) {
 
 function* getPostById({ payload }) {
   try {
+    console.log(payload)
     const response = yield instance({
       method: "get",
       url: `/guest/post/get${payload}`,
     })
+    console.log(response.data)
     if (response.status === 200) {
       yield put(getPostByIdSuccess(response.data.data));
     } else {

@@ -6,3 +6,19 @@
 .main > .ant-space-item {
     width: 100%;
 }
+
+.comment-bar > .ant-space-item {
+    width: 100%;
+}
+
+.share-comment > .ant-space-item:last-child {
+    width: 100%;
+}
+
+.comments {
+    line-height: 0;
+}
+
+.comments > .ant-space-item:first-child {
+    width: 100%;
+}

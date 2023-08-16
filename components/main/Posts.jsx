@@ -1,9 +1,10 @@
 import {Avatar, Badge, Card, Typography, Space} from "antd";
 import {CommentOutlined, LikeOutlined} from "@ant-design/icons";
 import {useDispatch, useSelector} from "react-redux";
-import {likePostsRequest} from "../../redux/post/actions";
-import {useState} from "react";
+import {changePost, likePostsRequest} from "../../redux/post/actions";
+import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
+import checkTime from "../../checkTime/checkTime";
 
 const {Meta} = Card;
 const {Text} = Typography;
@@ -12,12 +13,19 @@ export default function Posts({post}) {
   const {
     user
   } = useSelector(state => state.auth);
+  const {
+    isLikePostsRequest
+  } = useSelector(state => state.posts);
   const dispatch = useDispatch();
-  const [likes, setLike] = useState(post.likes);
+  const [likes, setLike] = useState([]);
   const router = useRouter();
 
+  useEffect(() => {
+    setLike(post.likes);
+  }, [post.likes])
+
   const likePost = () => {
-    console.log(post)
+    console.log(isLikePostsRequest)
     if (user?.id) {
       dispatch(likePostsRequest(post.id))
       if (likes.find(elem => elem.id === user?.id)) {
@@ -25,24 +33,8 @@ export default function Posts({post}) {
       } else {
         setLike([...likes, user])
       }
-    } else {
+    } else if (!user) {
       router.replace("/signin")
-    }
-  }
-
-  function checkTime(time) {
-    if ((time / 1000 / 60 / 60 / 24 / 365) > 1 && (time / 1000 / 60 / 60 / 24 / 365) < 365) {
-      return `${parseInt((time / 1000 / 60 / 60 / 24 / 365))} years`
-    } else if ((time / 1000 / 60 / 60 / 24) > 1 && (time / 1000 / 60 / 60 / 24) < 24) {
-      return `${parseInt((time / 1000 / 60 / 60 / 24))} days`
-    } else if ((time / 1000 / 60 / 60) > 1 && (time / 1000 / 60 / 60) < 60) {
-      return `${parseInt((time / 1000 / 60 / 60))} hours`
-    } else if ((time / 1000 / 60) > 1 && (time / 1000 / 60) < 60) {
-      return `${parseInt((time / 1000 / 60))} minutes`
-    } else if ((time / 1000) > 1 && (time / 1000) < 60) {
-      return `${parseInt((time / 1000))} seconds`
-    } else if (time < 1000) {
-      return `${1} second`
     }
   }
 
@@ -85,7 +77,7 @@ export default function Posts({post}) {
             color: likes.find(like => like.id === user?.id) ? "blue" : "gray"
           }}/>
         </Badge>,
-        <Badge count={post.comments.length} key="like" size="middle" offset={[10, 0]} color="#63a4ff">
+        <Badge count={post?.postComments?.length} key="like" size="middle" offset={[10, 0]} color="#63a4ff">
           <CommentOutlined style={{fontSize: "20px"}}/>
         </Badge>,
       ]}
