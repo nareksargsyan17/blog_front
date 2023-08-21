@@ -17,6 +17,7 @@ const PostMiddleWare = ({children}) => {
     const prevGetSuccess = usePrevious(isGetPostByIdSuccess);
     const pathname = usePathname();
 
+    console.log(pathname.split(""))
     useEffect(() => {
         dispatch(getPostByIdRequest(pathname));
     }, [dispatch, pathname])

@@ -33,6 +33,7 @@ function* addComment({ payload }) {
       url: `/auth/comment/add`,
       data: payload
     })
+    console.log(response.data)
     if (response.status === 200) {
       yield put(addCommentsSuccess(response.data.data));
     } else {

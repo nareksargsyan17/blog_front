@@ -9,24 +9,19 @@ import Modal from "antd/es/modal/Modal";
 import Upload from "antd/es/upload/Upload";
 import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
-import {addPostsRequest, uploadPostImageRequest} from "../../redux/post/actions";
+import { addPostsRequest } from "../../redux/post/actions";
 
 export default function SharePost({setPosts}) {
     const {
         user,
-        isGetUserRequest,
-        isGetUserSuccess,
-        isGetUserFailure,
     } = useSelector(state => state.auth);
     const {
         isAddPostsSuccess,
-        isUploadPostImageSuccess,
         addedPost
     } = useSelector(state => state.posts);
     const dispatch = useDispatch();
     const [form] = Form.useForm();
     const prevAddSuccess = usePrevious(isAddPostsSuccess);
-    const prevUploadPostSuccess = usePrevious(isUploadPostImageSuccess);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [postValues, setValues] = useState({});
     const [isDone, setDone] = useState("fail");
@@ -44,14 +39,6 @@ export default function SharePost({setPosts}) {
 
     useEffect(() => {
         if (isAddPostsSuccess && prevAddSuccess === false) {
-            const formData = new FormData();
-            formData.append("image", postValues.image)
-            dispatch(uploadPostImageRequest({id: addedPost.id, formData}))
-        }
-    }, [addedPost.id, dispatch, isAddPostsSuccess, postValues.image, prevAddSuccess])
-
-    useEffect(() => {
-        if (isUploadPostImageSuccess && prevUploadPostSuccess === false) {
             setPosts((oldPosts) => {
                 oldPosts.unshift(addedPost);
                 return [...oldPosts];
@@ -59,7 +46,7 @@ export default function SharePost({setPosts}) {
             formRef.current?.resetFields();
             setIsModalOpen(false);
         }
-    }, [addedPost, isUploadPostImageSuccess, prevUploadPostSuccess, setPosts, timer])
+    }, [addedPost, dispatch, isAddPostsSuccess, postValues, prevAddSuccess, setPosts]);
 
     const toggleModal = (show) => {
         setIsModalOpen(show);
@@ -92,7 +79,14 @@ export default function SharePost({setPosts}) {
                         clearInterval(timer);
                     }
                 }, 1);
-                dispatch(addPostsRequest({title: values.title, content: values.content}));
+                const formData = new FormData();
+                console.log(values)
+                values.image = values.image.file;
+                for (let index in values) {
+                    formData.append(index, values[index]);
+                }
+                console.log(postValues)
+                dispatch(addPostsRequest(formData));
             })
             .catch((info) => {
                 console.log('Validate Failed:', info);
@@ -107,7 +101,7 @@ export default function SharePost({setPosts}) {
     }}>
         <Space style={{textAlign: "left", width: "100%", height: "100%"}} className="share-post">
             <Avatar size="large"
-                    src={`http://localhost:3001/${user.images.path}`}/>
+                    src={`http://localhost:3001/${user.avatar}`}/>
             <Button style={{borderRadius: "15px"}} onClick={() => toggleModal(true)}>Start a post <AreaChartOutlined
                 style={{fontSize: "15px", color: "#1677ff"}}/></Button>
             <Modal

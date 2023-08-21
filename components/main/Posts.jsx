@@ -1,7 +1,7 @@
 import {Avatar, Badge, Card, Typography, Space} from "antd";
 import {CommentOutlined, LikeOutlined} from "@ant-design/icons";
 import {useDispatch, useSelector} from "react-redux";
-import {changePost, likePostsRequest} from "../../redux/post/actions";
+import { likePostsRequest } from "../../redux/post/actions";
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import checkTime from "../../checkTime/checkTime";
@@ -13,19 +13,15 @@ export default function Posts({post}) {
   const {
     user
   } = useSelector(state => state.auth);
-  const {
-    isLikePostsRequest
-  } = useSelector(state => state.posts);
   const dispatch = useDispatch();
   const [likes, setLike] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
     setLike(post.likes);
-  }, [post.likes])
+  }, [post?.likes])
 
   const likePost = () => {
-    console.log(isLikePostsRequest)
     if (user?.id) {
       dispatch(likePostsRequest(post.id))
       if (likes.find(elem => elem.id === user?.id)) {
@@ -47,7 +43,7 @@ export default function Posts({post}) {
       }}
       title={
         <Space style={{textAlign: "left"}} >
-          <Avatar size="large" src={`http://localhost:3001/${post.owner.images.path}`}/>
+          <Avatar size="large" src={`http://localhost:3001/${post.owner.avatar}`}/>
           <div>
             <Text style={{display: "block", fontSize: "18px"}}>{post.owner.firstName} {post.owner.lastName}</Text>
             <Text style={{fontSize: "9px"}}>{checkTime((new Date() - new Date(post.createdAt)))}</Text>
@@ -61,7 +57,7 @@ export default function Posts({post}) {
         >
           <img
             alt="example"
-            src={`http://localhost:3001/${post.images.path}`}
+            src={`http://localhost:3001/${post.image}`}
             style={{maxHeight: "600px"}}
           />
         </div>

@@ -2,7 +2,7 @@
 import {Avatar, Button, Card, Empty, Layout, Skeleton, Space, Spin} from "antd";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {getPostsRequest} from "../../redux/post/actions";
+import {changePost, getPostsRequest} from "../../redux/post/actions";
 import Posts from "./Posts";
 import {LoadingOutlined} from "@ant-design/icons";
 import Error from "../../app/error";
@@ -51,7 +51,6 @@ export default function MainBar() {
     }
   }, [isGetPostsFailure, isGetPostsSuccess, postsData, prevGetSuccess]);
 
-  console.log("posts-----", posts)
   return (
     <ErrorBoundary fallback={<Error/>}>
       <Content style={contentStyle}>

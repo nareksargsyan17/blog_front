@@ -18,44 +18,55 @@ export default function AddComment({user, parentId, setAnswers}) {
     const dispatch = useDispatch();
     const prevAddedSuccess = usePrevious(isAddCommentsSuccess);
 
+
     useEffect(() => {
         if (isAddCommentsSuccess && prevAddedSuccess === false) {
+            console.log(addedComment)
             let newCommentsList = [...comments];
-            if (parentId === null) {
+            console.log(parentId)
+            if (addedComment.parentId === null) {
                 newCommentsList.unshift({
-                    comment : addedComment,
+                    comment: addedComment,
                     answers: []
                 })
                 dispatch(changeCommentsList(newCommentsList))
+
             } else {
-                setAnswers((oldAnswers => {
-                    console.log(oldAnswers)
-                    oldAnswers.unshift(addedComment)
-                    return oldAnswers
-                }))
+                if (setAnswers) {
+                    setAnswers((oldAnswers => {
+                        console.log(oldAnswers)
+                        const newAnswers = [...oldAnswers];
+                        console.log(addedComment)
+                        newAnswers.unshift(addedComment)
+                        return newAnswers
+                    }))
+                }
             }
+
             dispatch(changePostCommentCount(commentCount + 1))
         }
     }, [addedComment, commentCount, comments, dispatch, isAddCommentsSuccess, parentId, prevAddedSuccess, setAnswers])
 
 
-    return <Space style={{width: "100%", display: "flex", justifyContent: "left", alignItems: "center", background: "white"}} className="share-comment">
+    return <Space
+        style={{width: "100%", display: "flex", justifyContent: "left", alignItems: "center", background: "white"}}
+        className="share-comment">
         <Avatar size="large"
-                src={`http://localhost:3001/${user?.images.path}`}
+                src={`http://localhost:3001/${user?.avatar}`}
         />
         <Form onSubmitCapture={(e) => {
             dispatch(addCommentsRequest({
-                comment : e.target[0].value,
+                comment: e.target[0].value,
                 postId: post.id,
                 parentId: parentId
             }))
-            
+
             e.target.reset()
         }}>
             <Form.Item
                 name="comment"
             >
-                <Input  style={{width: "100%", padding: "10px 15px", borderRadius: "30px"}} placeholder="Add a comment"/>
+                <Input style={{width: "100%", padding: "10px 15px", borderRadius: "30px"}} placeholder="Add a comment"/>
             </Form.Item>
         </Form>
     </Space>

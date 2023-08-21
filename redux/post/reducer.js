@@ -104,6 +104,7 @@ const reducer = handleActions(
             isAddPostsSuccess: true,
             isAddPostsFailure: false,
             addedPost: payload,
+            postsData: [...state.postsData, payload]
         }),
         [addPostsFailure]: (
             state,

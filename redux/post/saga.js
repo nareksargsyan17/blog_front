@@ -38,10 +38,10 @@ function* getPosts({ payload }) {
 
 function* addPost({ payload }) {
   try {
-    const response = yield instance({
-      method: "post",
-      url: `/auth/post/add`,
-      data: payload
+    const response = yield instance.post(`/auth/post/add`, payload, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
     })
     if (response.status === 200) {
       yield put(addPostsSuccess(response.data.data));

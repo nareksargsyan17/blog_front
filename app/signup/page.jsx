@@ -1,7 +1,7 @@
 import SignUp from "../../components/signup/SignUp.jsx";
 
 export const metadata = {
-  title: "SIgn Up"
+  title: "Sign Up"
 }
 
 export default function Registration() {

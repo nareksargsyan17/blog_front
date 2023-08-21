@@ -61,7 +61,7 @@ function* changePassword(action) {
   try {
     const response = yield instance({
       method: "put",
-      url: "/user/users/change_pass",
+      url: "/auth/user/change_pass",
       headers: {
         'Accept': 'application/json',
       },
