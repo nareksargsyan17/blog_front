@@ -1,10 +1,10 @@
 "use client"
 
-import Middleware from "../../middleware/Middleware";
+import SignMiddleware from "../../middleware/SignMiddleware";
 
 
 export default function Layout({children}) {
-  return <Middleware>
+  return <SignMiddleware>
     {children}
-  </Middleware>
+  </SignMiddleware>
 }

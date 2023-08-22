@@ -6,6 +6,10 @@ import {getPostByIdRequest} from "../redux/post/actions";
 import {useEffect} from "react";
 import {usePrevious} from "@react-hooks-library/core";
 import {getUserRequest} from "../redux/auth/actions";
+import contentStyle from "../theme/contentStyle";
+import {Spin} from "antd";
+import {LoadingOutlined} from "@ant-design/icons";
+import {Content} from "antd/es/layout/layout";
 
 const PostMiddleWare = ({children}) => {
     const {
@@ -17,17 +21,21 @@ const PostMiddleWare = ({children}) => {
     const prevGetSuccess = usePrevious(isGetPostByIdSuccess);
     const pathname = usePathname();
 
-    console.log(pathname.split(""))
+    console.log(isGetPostByIdSuccess && prevGetSuccess)
     useEffect(() => {
         dispatch(getPostByIdRequest(pathname));
     }, [dispatch, pathname])
 
-    if (isGetPostByIdSuccess && prevGetSuccess === false) {
-        return children
-    } else if (post?.title) {
-        return children
-    } else if (isGetPostByIdFailure) {
-        throw new Error("")
+    if (post != null) {
+        return children;
+    } else if (isGetPostByIdFailure || post == null) {
+        throw new Error("");
+    } else {
+        return (
+           <Content style={contentStyle}>
+               <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+           </Content>
+        )
     }
 };
 

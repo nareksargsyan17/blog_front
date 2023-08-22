@@ -9,17 +9,16 @@ import { useDispatch, useSelector } from "react-redux";
 import {changePasswordRequest} from "../../redux/auth/actions";
 import {useEffect} from "react";
 import { usePrevious } from "@react-hooks-library/core";
-import {useRouter} from "next/dist/client/compat/router";
+import {useRouter} from "next/navigation";
 const { Title } = Typography;
 
 export default function ChangePassword() {
-    const router = useRouter()
+    const router = useRouter();
     const dispatch = useDispatch();
     const {
         isChangePasswordRequest,
         isChangePasswordSuccess,
         isChangePasswordFailure,
-        userData
     } = useSelector(state => state.auth);
     const prevFailure = usePrevious(isChangePasswordFailure);
     const prevSuccess = usePrevious(isChangePasswordSuccess);
@@ -30,9 +29,7 @@ export default function ChangePassword() {
                 duration: 3,
                 description: "Your Password was changed"
             });
-            setTimeout(() => {
-                router.replace("/");
-            }, 1000)
+            router.replace("/");
         }
         if (isChangePasswordFailure && prevFailure === false) {
             notification["error"]({
@@ -57,9 +54,11 @@ export default function ChangePassword() {
                     remember: true,
                 }}
                 style={{
-                    width: "400px",
-                    padding: "40px",
-                    boxShadow: "1px 1px 10px 0px rgba(0,0,0,0.75)"}}
+                    width: "100%",
+                    padding: "100px 40px",
+                    boxShadow: "1px 1px 10px 0px rgba(0,0,0,0.75)",
+                    background: "white"
+                }}
                 onFinish={onFinish}
             >
                 <Form.Item>

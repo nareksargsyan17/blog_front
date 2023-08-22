@@ -34,6 +34,10 @@ export default function Posts({post}) {
     }
   }
 
+  const goToProfile = () => {
+    router.replace(`/user/${post?.owner?.id}`)
+  }
+
   return (
     <Card
       style={{
@@ -43,9 +47,9 @@ export default function Posts({post}) {
       }}
       title={
         <Space style={{textAlign: "left"}} >
-          <Avatar size="large" src={`http://localhost:3001/${post.owner.avatar}`}/>
+          <Avatar onClick={goToProfile} style={{cursor: "pointer"}} size="large" src={`http://localhost:3001/${post.owner.avatar}`}/>
           <div>
-            <Text style={{display: "block", fontSize: "18px"}}>{post.owner.firstName} {post.owner.lastName}</Text>
+            <Text onClick={goToProfile} style={{display: "block", fontSize: "18px", cursor: "pointer"}}>{post.owner.firstName} {post.owner.lastName}</Text>
             <Text style={{fontSize: "9px"}}>{checkTime((new Date() - new Date(post.createdAt)))}</Text>
           </div>
         </Space>
@@ -70,7 +74,7 @@ export default function Posts({post}) {
           } style={{
             padding: "5px 10px",
             fontSize: "20px",
-            color: likes.find(like => like.id === user?.id) ? "blue" : "gray"
+            color: likes.find(like => like.id === user?.id) ? "rgb(99, 130, 255)" : "gray"
           }}/>
         </Badge>,
         <Badge count={post?.postComments?.length} key="like" size="middle" offset={[10, 0]} color="#63a4ff">

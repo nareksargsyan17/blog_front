@@ -22,6 +22,14 @@ export const getPostByIdRequest = createAction("GET_POST_BY_ID_REQUEST")
 export const getPostByIdSuccess = createAction("GET_POST_BY_ID_SUCCESS")
 export const getPostByIdFailure = createAction("GET_POST_BY_ID_FAILURE")
 
+export const getUserPostsRequest = createAction("GET_USER_POSTS_REQUEST")
+export const getUserPostsSuccess = createAction("GET_USER_POSTS_SUCCESS")
+export const getUserPostsFailure = createAction("GET_USER_POSTS_FAILURE")
+
+export const getUserLikedPostsRequest = createAction("GET_USER_LIKED_POSTS_REQUEST")
+export const getUserLikedPostsSuccess = createAction("GET_USER_LIKED_POSTS_SUCCESS")
+export const getUserLikedPostsFailure = createAction("GET_USER_LIKED_POSTS_FAILURE")
+
 export const changePostCommentCount = createAction("CHANGE_COMMENT_COUNT")
 
 export const changePost = createAction("CHANGE_POST")
