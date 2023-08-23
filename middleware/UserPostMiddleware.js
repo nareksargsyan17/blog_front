@@ -7,36 +7,26 @@ import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { getUserPostsRequest } from "../redux/post/actions";
 import { useDispatch, useSelector } from "react-redux";
+import {getUserByIdRequest} from "../redux/auth/actions";
 
 const UserPostMiddleware = ({children}) => {
    const router = useRouter();
    const {
-      isGetUserPostsSuccess,
-      isGetUserPostsFailure
-   } = useSelector(state => state.posts)
+      isGetUserByIdSuccess,
+      isGetUserByIdFailure
+   } = useSelector(state => state.auth)
    const dispatch = useDispatch();
    const pathName = usePathname();
-   const [token, setToken] = useState("");
 
    useEffect(() => {
-      dispatch(getUserPostsRequest({
-         id: pathName.split("/")[2],
-         page: 1
-      }))
+      dispatch(getUserByIdRequest(pathName.split("/")[2]));
    }, [dispatch, pathName])
 
-   useEffect(() => {
-      if (typeof window !== 'undefined' && window.localStorage) {
-         let token = localStorage.getItem("token");
-         setToken(token);
-      }
-   }, [])
+   console.log("asas")
 
-   if (token == null) {
-      return router.replace("/signin");
-   } else if (isGetUserPostsFailure) {
+   if (isGetUserByIdFailure) {
       return router.back();
-   } else if (token && isGetUserPostsSuccess) {
+   } else if (isGetUserByIdSuccess) {
       return children;
    } else {
       return (

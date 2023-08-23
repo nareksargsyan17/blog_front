@@ -21,7 +21,13 @@ import {
    getUserPostsSuccess,
    getUserPostsFailure,
    getUserLikedPostsFailure,
-   getUserLikedPostsSuccess, getUserLikedPostsRequest
+   getUserLikedPostsSuccess,
+   getUserLikedPostsRequest,
+   editPostsSuccess,
+   editPostsRequest,
+   editPostsFailure,
+   deletePostsRequest,
+   deletePostsSuccess, deletePostsFailure
 } from './actions'
 
 const defaultState = {
@@ -46,14 +52,22 @@ const defaultState = {
    isGetUserLikedPostsRequest: false,
    isGetUserLikedPostsSuccess: false,
    isGetUserLikedPostsFailure: false,
+   isEditPostsRequest: false,
+   isEditPostsSuccess: false,
+   isEditPostsFailure: false,
+   isDeletePostsRequest: false,
+   isDeletePostsSuccess: false,
+   isDeletePostsFailure: false,
    postsData: [],
    successMessage: "",
    errorMessage: '',
-   addedPost: {},
-   post: {},
+   addedPost: null,
+   post: null,
+   updatedPost: null,
    userPosts: null,
    userLikedPosts: null,
-   commentCount: 0
+   commentCount: 0,
+   deletedId: 0
 }
 
 const reducer = handleActions(
@@ -269,6 +283,62 @@ const reducer = handleActions(
          isGetUserLikedPostsRequest: false,
          isGetUserLikedPostsSuccess: false,
          isGetUserLikedPostsFailure: true,
+         errorMessage: payload
+      }),
+      [editPostsRequest]: (
+         state
+      ) => ({
+         ...state,
+         isEditPostsRequest: true,
+         isEditPostsSuccess: false,
+         isEditPostsFailure: false,
+      }),
+      [editPostsSuccess]: (
+         state,
+         {payload},
+      ) => ({
+         ...state,
+         isEditPostsRequest: false,
+         isEditPostsSuccess: true,
+         isEditPostsFailure: false,
+         updatedPost: payload
+      }),
+      [editPostsFailure]: (
+         state,
+         {payload}
+      ) => ({
+         ...state,
+         isEditPostsRequest: false,
+         isEditPostsSuccess: false,
+         isEditPostsFailure: true,
+         errorMessage: payload
+      }),
+      [deletePostsRequest]: (
+         state
+      ) => ({
+         ...state,
+         isDeletePostsRequest: true,
+         isDeletePostsSuccess: false,
+         isDeletePostsFailure: false,
+      }),
+      [deletePostsSuccess]: (
+         state,
+         {payload},
+      ) => ({
+         ...state,
+         isDeletePostsRequest: false,
+         isDeletePostsSuccess: true,
+         isDeletePostsFailure: false,
+         deletedId: payload
+      }),
+      [deletePostsFailure]: (
+         state,
+         {payload}
+      ) => ({
+         ...state,
+         isDeletePostsRequest: false,
+         isDeletePostsSuccess: false,
+         isDeletePostsFailure: true,
          errorMessage: payload
       }),
    },

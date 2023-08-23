@@ -2,15 +2,41 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {likePostsRequest} from "../../redux/post/actions";
-import { Avatar, Badge, Card, Empty, Layout, Space, Typography, Modal } from "antd";
-import {CloseOutlined, CommentOutlined, LikeOutlined} from "@ant-design/icons";
+import {deletePostsRequest, editPostsRequest, likePostsRequest} from "../../redux/post/actions";
+import {
+   Avatar,
+   Badge,
+   Card,
+   Empty,
+   Layout,
+   Space,
+   Typography,
+   Modal,
+   Button,
+   Popover,
+   Form,
+   Image,
+   Popconfirm
+} from "antd";
+import {
+   CloseOutlined,
+   CommentOutlined,
+   DashOutlined,
+   DeleteOutlined,
+   EditOutlined, ExclamationCircleOutlined,
+   LikeOutlined
+} from "@ant-design/icons";
 import contentStyle from "../../theme/contentStyle";
 import {getUserRequest} from "../../redux/auth/actions";
 import checkTime from "../../checkTime/checkTime";
 import {getCommentsRequest} from "../../redux/comment/actions";
 import AddComment from "../comment/AddComment";
 import Comments from "../comment/Comments";
+import {usePrevious} from "@react-hooks-library/core";
+import Input from "antd/es/input/Input";
+import TextArea from "antd/es/input/TextArea";
+
+const {confirm} = Modal;
 
 const {Meta} = Card;
 const {Text} = Typography;
@@ -22,40 +48,69 @@ export default function PostPage() {
    } = useSelector(state => state.auth);
    const {
       post,
-      commentCount
+      commentCount,
+      isEditPostsSuccess,
+      updatedPost,
+      isDeletePostsSuccess
    } = useSelector(state => state.posts);
    const {
+      isGetCommentsSuccess,
       comments
    } = useSelector(state => state.comments);
    const dispatch = useDispatch();
+   const prevGetCommentSuccess = usePrevious(isGetCommentsSuccess);
    const [likes, setLike] = useState([]);
    const [allComments, setComment] = useState([]);
+   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
    const [isModalOpen, setIsModalOpen] = useState(false);
+   const [show, setShow] = useState(false);
+   const [currPost, setPost] = useState(post);
+   const [form] = Form.useForm();
+   const formRef = React.useRef(null);
+   const prevEditPostsSuccess = usePrevious(isEditPostsSuccess);
+   const prevDeleteSuccess = usePrevious(isDeletePostsSuccess);
 
    const router = useRouter();
 
    useEffect(() => {
-      setComment(comments)
-   }, [comments]);
-
-   useEffect(() => {
-      setLike(post?.likes);
-   }, [post?.likes]);
+      setLike(currPost?.likes);
+   }, [currPost?.likes]);
 
 
    useEffect(() => {
-      dispatch(getCommentsRequest({postId: post?.id, parentId: null}))
-   }, [dispatch, post?.id])
+      if (currPost?.id) {
+         dispatch(getCommentsRequest({postId: currPost?.id, parentId: null}))
+      }
+   }, [dispatch, currPost?.id])
+
+   useEffect(() => {
+      if (isGetCommentsSuccess && prevGetCommentSuccess === false) {
+         setComment(comments)
+      }
+   }, [comments, isGetCommentsSuccess, prevGetCommentSuccess]);
 
    useEffect(() => {
       if (typeof window !== 'undefined') {
          let token = localStorage.getItem("token");
          if (token && !user) {
-            console.log("user")
             dispatch(getUserRequest());
          }
       }
-   }, [dispatch, user])
+   }, [dispatch, user]);
+
+   useEffect(() => {
+      if (isEditPostsSuccess && prevEditPostsSuccess === false) {
+         router.replace(`/${updatedPost.id}`);
+         setPost({...currPost, ...updatedPost});
+         toggleModal(false);
+      }
+   }, [currPost, isEditPostsSuccess, prevEditPostsSuccess, router, updatedPost]);
+
+   useEffect(() => {
+      if (isDeletePostsSuccess && prevDeleteSuccess === false) {
+         router.replace("/")
+      }
+   }, [isDeletePostsSuccess, prevDeleteSuccess, router]);
 
    const showModal = (value) => {
       setIsModalOpen(value);
@@ -63,7 +118,7 @@ export default function PostPage() {
 
    const likePost = () => {
       if (user?.id) {
-         dispatch(likePostsRequest(post.id))
+         dispatch(likePostsRequest(currPost.id))
          if (likes.find(elem => elem.id === user?.id)) {
             setLike(likes.filter(elem => elem.id !== user.id))
          } else {
@@ -75,15 +130,47 @@ export default function PostPage() {
    }
 
    const goToProfile = () => {
-      router.replace(`/user/${post?.owner?.id}`)
+      router.replace(`/user/${currPost?.owner?.id}`)
    }
+
+
+   const toggleModal = (show) => {
+      setIsEditModalOpen(show);
+   }
+
+   const editPost = () => {
+      form
+         .validateFields()
+         .then((values) => {
+            form.resetFields();
+            dispatch(editPostsRequest({
+               id: currPost.id,
+               data: values
+            }))
+            return values
+         })
+   }
+
+   const showConfirm = () => {
+      setShow(false);
+      confirm({
+         icon: <ExclamationCircleOutlined/>,
+         title: "Delete the Post",
+         content: "Are you sure to delete this post?",
+         okText: "Yes",
+         cancelText: "No",
+         onOk() {
+            dispatch(deletePostsRequest(currPost.id));
+         }
+      });
+   };
 
    return (
       <Content
          style={contentStyle}
       >
          {
-            post ? (
+            currPost ? (
                <>
                   <Card
                      style={{
@@ -94,7 +181,8 @@ export default function PostPage() {
                      }}
                      title={
                         <Space style={{textAlign: "left"}}>
-                           <Avatar onClick={goToProfile} style={{cursor: "pointer"}}  size="large" src={`http://localhost:3001/${post?.owner?.avatar}`}/>
+                           <Avatar onClick={goToProfile} style={{cursor: "pointer"}} size="large"
+                                   src={`http://localhost:3001/${currPost?.owner?.avatar}`}/>
                            <div>
                               <Text
                                  onClick={goToProfile}
@@ -104,14 +192,66 @@ export default function PostPage() {
                                     cursor: "pointer"
                                  }}
                               >
-                                 {post?.owner?.firstName} {post?.owner?.lastName}
+                                 {currPost?.owner?.firstName} {currPost?.owner?.lastName}
                               </Text>
                               <Text
                                  style={{fontSize: "9px"}}
                               >
-                                 {checkTime((new Date() - new Date(post?.createdAt)))}
+                                 {checkTime((new Date() - new Date(currPost?.createdAt)))}
                               </Text>
                            </div>
+                           <Popover
+                              content={<Space direction="vertical">
+                                 <Button
+                                    onClick={() => {
+                                       setShow(false);
+                                       toggleModal(true)
+                                    }}
+                                    size="small"
+                                    style={{
+                                       width: "200px",
+                                       display: "flex",
+                                       justifyContent: "left",
+                                       alignItems: "center",
+                                       padding: "20px"
+                                    }}
+                                 >
+                                    <EditOutlined/>
+                                    <Text style={{marginLeft: "20px"}}>Edit</Text>
+                                 </Button>
+                                 <Button
+                                    onClick={showConfirm}
+                                    size="small"
+                                    style={{
+                                       width: "200px",
+                                       display: "flex",
+                                       justifyContent: "left",
+                                       alignItems: "center",
+                                       padding: "20px"
+                                    }}
+                                 >
+                                    <DeleteOutlined/>
+                                    <Text style={{marginLeft: "20px"}}>Delete</Text>
+                                 </Button>
+                              </Space>}
+                              trigger="click"
+                              open={show}
+                              onOpenChange={() => setShow(!show)}
+                           >
+                              <Button
+                                 type="text"
+                                 style={{
+                                    position: "absolute",
+                                    right: "0",
+                                    top: "10px",
+                                    cursor: "pointer",
+                                    borderRadius: "50%",
+                                    height: "40px"
+                                 }}
+                              >
+                                 <DashOutlined/>
+                              </Button>
+                           </Popover>
                         </Space>
                      }
                      cover={
@@ -120,7 +260,7 @@ export default function PostPage() {
                         >
                            <img
                               alt="example"
-                              src={`http://localhost:3001/${post?.image}`}
+                              src={`http://localhost:3001/${currPost?.image}`}
                               style={{maxHeight: "600px"}}
                            />
                         </div>
@@ -148,19 +288,19 @@ export default function PostPage() {
                      ]}
                   >
                      <Meta
-                        title={post?.title}
-                        description={post?.content?.length > 30 ? post?.content.slice(0, 30) + "..." : post?.content}
+                        title={currPost?.title}
+                        description={currPost?.content?.length > 30 ? currPost?.content.slice(0, 30) + "..." : currPost?.content}
                      />
                   </Card>
                   <Space direction="vertical" style={{background: "white", padding: "10px 20px"}}
                          className="comment-bar">
                      {
                         user ? (
-                           <AddComment user={user} parentId={null}/>
+                           <AddComment user={user} parentId={null} setComment={setComment}/>
                         ) : null
                      }
                      {
-                        allComments.map((comment) => {
+                        allComments?.map((comment) => {
                            return <Comments key={comment.comment.id} comment={comment} user={user}/>
                         })
                      }
@@ -168,7 +308,7 @@ export default function PostPage() {
                   <Modal title="All likes" open={isModalOpen}
                          closeIcon={<CloseOutlined onClick={() => showModal(false)}/>}
                          destroyOnClose={true} footer={null}>
-                     {post?.likes?.map(user => (
+                     {currPost?.likes?.map(user => (
                         <Card
                            key={user?.id}
                         >
@@ -176,6 +316,44 @@ export default function PostPage() {
                            <Text style={{marginLeft: "15px"}}>{user?.firstName} {user?.lastName}</Text>
                         </Card>
                      ))}
+                  </Modal>
+                  <Modal
+                     title="Edit Post"
+                     style={{textAlign: "center"}}
+                     open={isEditModalOpen}
+                     okText="Edit"
+                     onOk={editPost}
+                     onCancel={() => toggleModal(false)}>
+                     <Image
+                        preview={false}
+                        alt="image"
+                        src={`http://localhost:3001/${currPost.image}`}
+                        style={{marginBottom: "15px"}}/>
+                     <Form
+                        form={form}
+                        name="form_in_modal"
+                        layout="vertical"
+                        ref={formRef}
+                        initialValues={{
+                           title: currPost?.title,
+                           content: currPost?.content
+                        }}
+                     >
+                        <Form.Item
+                           name="title"
+                           label="Title:"
+                           rules={[{required: true, message: 'Please Type Your Post Title'}]}
+                        >
+                           <Input type="text" placeholder="Type Your Post Title"/>
+                        </Form.Item>
+                        <Form.Item
+                           name="content"
+                           label="Post Content:"
+                           rules={[{required: true, message: 'Please Type Your Post Content'}]}
+                        >
+                           <TextArea placeholder="Type Your Post Content"/>
+                        </Form.Item>
+                     </Form>
                   </Modal>
                </>
             ) : (

@@ -13,22 +13,19 @@ import {Content} from "antd/es/layout/layout";
 
 const PostMiddleWare = ({children}) => {
     const {
-        isGetPostByIdSuccess,
         isGetPostByIdFailure,
         post
     } = useSelector(state => state.posts);
     const dispatch = useDispatch();
-    const prevGetSuccess = usePrevious(isGetPostByIdSuccess);
     const pathname = usePathname();
 
-    console.log(isGetPostByIdSuccess && prevGetSuccess)
     useEffect(() => {
         dispatch(getPostByIdRequest(pathname));
     }, [dispatch, pathname])
 
     if (post != null) {
         return children;
-    } else if (isGetPostByIdFailure || post == null) {
+    } else if (isGetPostByIdFailure) {
         throw new Error("");
     } else {
         return (

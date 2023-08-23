@@ -21,7 +21,6 @@ function* getComments({ payload }) {
       yield put(getCommentsFailure(response.data.message));
     }
   } catch (error) {
-    console.log('error---', error);
       yield put(getCommentsFailure(error.response.data.message || error.message));
   }
 }
@@ -33,7 +32,7 @@ function* addComment({ payload }) {
       url: `/auth/comment/add`,
       data: payload
     })
-    console.log(response.data)
+
     if (response.status === 200) {
       yield put(addCommentsSuccess(response.data.data));
     } else {

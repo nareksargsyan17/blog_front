@@ -1,7 +1,7 @@
-import LikedPosts from "../../../../components/user/LikedPosts";
+import LikedPosts from "../../../components/user/LikedPosts";
 
 export const metadata = {
-   title: "Profile"
+   title: "Likes"
 }
 
 export default function UserLikedPosts() {

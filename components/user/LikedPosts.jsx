@@ -1,37 +1,39 @@
 "use client"
 import { Content } from "antd/es/layout/layout";
 import contentStyle from "../../theme/contentStyle";
-import { Avatar, Empty, Space, Spin, Typography } from "antd";
+import { Empty, Spin, Typography } from "antd";
 import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { usePathname } from "next/navigation";
-import { getUserPostsRequest } from "../../redux/post/actions";
+import {getUserLikedPostsRequest, getUserPostsRequest} from "../../redux/post/actions";
 import Posts from "../main/Posts";
 import { LoadingOutlined } from "@ant-design/icons";
-const { Text } = Typography;
+const { Title } = Typography;
 
 export default function LikedPosts() {
    const {
       isGetUserLikedPostsSuccess,
       userLikedPosts
    } = useSelector(state => state.posts);
+   const {
+      user
+   } = useSelector(state => state.auth);
    const dispatch = useDispatch();
-   const pathName = usePathname();
 
+   console.log(userLikedPosts)
    useEffect(() => {
-      if (!userLikedPosts) {
-         dispatch(getUserPostsRequest({
-            id: pathName.split("/")[2],
-            page: 1
-         }))
-      }
-   }, [dispatch, pathName, userLikedPosts])
+      dispatch(getUserLikedPostsRequest({
+         id: user?.id,
+         page: 1
+      }))
+   }, [dispatch, user?.id])
 
    return (
       <Content style={contentStyle}>
          {
             isGetUserLikedPostsSuccess && userLikedPosts ? (
                <>
+                  <Title level={4} style={{ textAlign: "center",}}>Liked Posts</Title>
                   {
                      userLikedPosts.length > 0 ? (
                         userLikedPosts.map(post => <Posts key={post.id} post={post}/>)) : <Empty/>

@@ -9,7 +9,6 @@ export const addPostsRequest = createAction("ADD_POSTS_REQUEST")
 export const addPostsSuccess = createAction("ADD_POSTS_SUCCESS")
 export const addPostsFailure = createAction("ADD_POSTS_FAILURE")
 
-
 export const uploadPostImageRequest = createAction("UPLOAD_POST_IMAGE_REQUEST")
 export const uploadPostImageSuccess = createAction("UPLOAD_POST_IMAGE_SUCCESS")
 export const uploadPostImageFailure = createAction("UPLOAD_POST_IMAGE_FAILURE")
@@ -29,6 +28,14 @@ export const getUserPostsFailure = createAction("GET_USER_POSTS_FAILURE")
 export const getUserLikedPostsRequest = createAction("GET_USER_LIKED_POSTS_REQUEST")
 export const getUserLikedPostsSuccess = createAction("GET_USER_LIKED_POSTS_SUCCESS")
 export const getUserLikedPostsFailure = createAction("GET_USER_LIKED_POSTS_FAILURE")
+
+export const editPostsRequest = createAction("EDIT_POSTS_REQUEST")
+export const editPostsSuccess = createAction("EDIT_POSTS_SUCCESS")
+export const editPostsFailure = createAction("EDIT_POSTS_FAILURE")
+
+export const deletePostsRequest = createAction("DELETE_POSTS_REQUEST")
+export const deletePostsSuccess = createAction("DELETE_POSTS_SUCCESS")
+export const deletePostsFailure = createAction("DELETE_POSTS_FAILURE")
 
 export const changePostCommentCount = createAction("CHANGE_COMMENT_COUNT")
 

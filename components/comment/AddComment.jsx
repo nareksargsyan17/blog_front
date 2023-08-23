@@ -5,7 +5,7 @@ import {addCommentsRequest, changeCommentsList} from "../../redux/comment/action
 import {usePrevious} from "@react-hooks-library/core";
 import {changePostCommentCount} from "../../redux/post/actions";
 
-export default function AddComment({user, parentId, setAnswers}) {
+export default function AddComment({user, parentId, setAnswers, setComment}) {
     const {
         post,
         commentCount
@@ -21,23 +21,19 @@ export default function AddComment({user, parentId, setAnswers}) {
 
     useEffect(() => {
         if (isAddCommentsSuccess && prevAddedSuccess === false) {
-            console.log(addedComment)
             let newCommentsList = [...comments];
-            console.log(parentId)
             if (addedComment.parentId === null) {
                 newCommentsList.unshift({
                     comment: addedComment,
                     answers: []
                 })
+                setComment(newCommentsList)
                 dispatch(changeCommentsList(newCommentsList))
-
             } else {
                 if (setAnswers) {
                     setAnswers((oldAnswers => {
-                        console.log(oldAnswers)
                         const newAnswers = [...oldAnswers];
-                        console.log(addedComment)
-                        newAnswers.unshift(addedComment)
+                        newAnswers.unshift(addedComment);
                         return newAnswers
                     }))
                 }
@@ -45,7 +41,7 @@ export default function AddComment({user, parentId, setAnswers}) {
 
             dispatch(changePostCommentCount(commentCount + 1))
         }
-    }, [addedComment, commentCount, comments, dispatch, isAddCommentsSuccess, parentId, prevAddedSuccess, setAnswers])
+    }, [addedComment, commentCount, comments, dispatch, isAddCommentsSuccess, parentId, prevAddedSuccess, setAnswers, setComment])
 
 
     return <Space

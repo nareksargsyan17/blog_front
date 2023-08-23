@@ -2,19 +2,24 @@ import {
   postRegistrationRequest,
   postRegistrationSuccess,
   postRegistrationFailure,
-  getVerificationRequest,
-  getVerificationSuccess,
-  getVerificationFailure,
   postLoginSuccess,
   postLoginFailure,
   postLoginRequest,
   changePasswordSuccess,
   changePasswordFailure,
   changePasswordRequest,
-  getUserSuccess, getUserFailure, getUserRequest
+  getUserSuccess,
+  getUserFailure,
+  getUserRequest,
+  getUserByIdSuccess,
+  getUserByIdFailure,
+  getUserByIdRequest,
+  editUserRequest,
+  editUserSuccess,
+  editUserFailure
 } from './actions'
-import {instance} from "../../configs/axiosInstance";
-import {put, takeEvery} from "redux-saga/effects";
+import { instance } from "../../configs/axiosInstance";
+import { put, takeLatest } from "redux-saga/effects";
 
 
 function* registration(action) {
@@ -83,7 +88,7 @@ function* getUser() {
       method: "get",
       url: "/auth/user/get/user",
     })
-    console.log(response)
+
     if (response.status === 200) {
       yield put(getUserSuccess(response.data.data));
     } else {
@@ -94,10 +99,44 @@ function* getUser() {
   }
 }
 
-export default function* authSaga() {
-  yield takeEvery(postRegistrationRequest, registration);
-  yield takeEvery(postLoginRequest, login);
-  yield takeEvery(changePasswordRequest, changePassword);
-  yield takeEvery(getUserRequest, getUser);
+function* editUser({ payload }) {
+  try {
+    const response = yield instance({
+      method: "patch",
+      url: "/auth/user/edit",
+      data: payload
+    })
+    if (response.status === 200) {
+      yield put(editUserSuccess(response.data.data));
+    } else {
+      yield put(editUserFailure(response.data.message));
+    }
+  } catch (error) {
+    yield put(editUserFailure(error.message));
+  }
+}
 
+function* getUserById({ payload }) {
+  try {
+    const response = yield instance({
+      method: "get",
+      url: `/guest/user/get/${payload}`,
+    })
+    if (response.status === 200) {
+      yield put(getUserByIdSuccess(response.data.data));
+    } else {
+      yield put(getUserByIdFailure(response.data.message));
+    }
+  } catch (error) {
+    yield put(getUserByIdFailure(error.message));
+  }
+}
+
+export default function* authSaga() {
+  yield takeLatest(postRegistrationRequest, registration);
+  yield takeLatest(postLoginRequest, login);
+  yield takeLatest(changePasswordRequest, changePassword);
+  yield takeLatest(getUserRequest, getUser);
+  yield takeLatest(editUserRequest, editUser);
+  yield takeLatest(getUserByIdRequest, getUserById);
 }

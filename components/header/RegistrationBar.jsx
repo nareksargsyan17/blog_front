@@ -3,7 +3,7 @@ import {Button, Card, Image, Popover, Space, Spin, Avatar, Typography} from "ant
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
-import {LoadingOutlined, LogoutOutlined, ToolOutlined, UserOutlined} from "@ant-design/icons";
+import {LikeOutlined, LoadingOutlined, LogoutOutlined, ToolOutlined, UserOutlined} from "@ant-design/icons";
 import {changeUserData, getUserRequest} from "../../redux/auth/actions";
 import {router} from "next/client";
 import {useRouter} from "next/navigation";
@@ -17,7 +17,7 @@ export default function RegistrationBar() {
    } = useSelector(state => state.auth);
    const dispatch = useDispatch();
    const [token, setToken] = useState("");
-   const [show, setShow] = useState(false)
+   const [show, setShow] = useState(false);
 
 
    useEffect(() => {
@@ -59,6 +59,18 @@ export default function RegistrationBar() {
                            }}>
                               <UserOutlined />
                               <Text style={{marginLeft: "20px"}}>Profile</Text>
+                           </Button>
+                           <Button onClick={() => {
+                              router.replace(`/user/likes`);
+                           }} size="small" style={{
+                              width: "200px",
+                              display: "flex",
+                              justifyContent: "left",
+                              alignItems: "center",
+                              padding: "20px"
+                           }}>
+                              <LikeOutlined />
+                              <Text style={{marginLeft: "20px"}}>Liked Posts</Text>
                            </Button>
                            <Button onClick={() => {
                               router.replace("/change");

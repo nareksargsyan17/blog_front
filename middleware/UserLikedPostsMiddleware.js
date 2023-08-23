@@ -5,40 +5,28 @@ import { Content } from "antd/es/layout/layout";
 import contentStyle from "../theme/contentStyle";
 import { Spin } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import {getUserLikedPostsRequest} from "../redux/post/actions";
+import { getUserLikedPostsRequest } from "../redux/post/actions";
 import { useDispatch, useSelector } from "react-redux";
+import {getUserRequest} from "../redux/auth/actions";
 
 const UserLikedPostMiddleware = ({children}) => {
    const router = useRouter();
    const {
-      isGetUserLikedPostsSuccess,
-      isGetUserLikedPostsFailure
-   } = useSelector(state => state.posts)
+      isGetUserSuccess,
+      isGetUserFailure,
+      user
+   } = useSelector(state => state.auth)
    const dispatch = useDispatch();
-   const pathName = usePathname();
-   const [token, setToken] = useState("");
-
-   console.log(pathName.split("/"))
 
    useEffect(() => {
-      dispatch(getUserLikedPostsRequest({
-         id: pathName.split("/")[2],
-         page: 1
-      }))
-   }, [dispatch, pathName])
-
-   useEffect(() => {
-      if (typeof window !== 'undefined' && window.localStorage) {
-         let token = localStorage.getItem("token");
-         setToken(token);
+      if (!user) {
+         dispatch(getUserRequest())
       }
-   }, [])
+   }, [dispatch, user])
 
-   if (token == null) {
-      return router.replace("/signin");
-   } else if (isGetUserLikedPostsFailure) {
+   if (isGetUserFailure) {
       return router.back();
-   } else if (token && isGetUserLikedPostsSuccess) {
+   } else if (isGetUserSuccess || user) {
       return children;
    } else {
       return (
