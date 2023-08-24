@@ -1,5 +1,5 @@
 "use client"
-import {Button, Layout, Space} from "antd";
+import { Layout } from "antd";
 import LogoImg from "./LogoImg";
 import RegistrationBar from "./RegistrationBar";
 

@@ -1,10 +1,10 @@
 "use client"
-import {useRouter} from "next/navigation";
-import {useEffect, useState} from "react";
-import {Content} from "antd/es/layout/layout";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { Content } from "antd/es/layout/layout";
 import contentStyle from "../theme/contentStyle";
-import {Spin} from "antd";
-import {LoadingOutlined} from "@ant-design/icons";
+import { Spin } from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const UserMiddleware = ({children}) => {
    const router = useRouter();
@@ -15,7 +15,7 @@ const UserMiddleware = ({children}) => {
          let token = localStorage.getItem("token");
          setToken(token);
       }
-   }, [token])
+   }, [token]);
 
    if (token == null) {
       return router.replace("/signin")
@@ -26,7 +26,7 @@ const UserMiddleware = ({children}) => {
          <Content style={contentStyle}>
             <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>
          </Content>
-      )
+      );
    }
 };
 

@@ -21,13 +21,17 @@ import {
    getUserLikedPostsFailure,
    getUserLikedPostsRequest,
    editPostsSuccess,
-   editPostsFailure, editPostsRequest, deletePostsSuccess, deletePostsFailure, deletePostsRequest
+   editPostsFailure,
+   editPostsRequest,
+   deletePostsSuccess,
+   deletePostsFailure,
+   deletePostsRequest
 } from './actions'
 import {instance} from "../../configs/axiosInstance";
 import {put, takeLatest} from "redux-saga/effects";
 
 
-function* getPosts({payload}) {
+function* getPosts({ payload }) {
    try {
       const response = yield instance({
          method: "get",
@@ -43,7 +47,7 @@ function* getPosts({payload}) {
    }
 }
 
-function* addPost({payload}) {
+function* addPost({ payload }) {
    try {
       const response = yield instance.post(`/auth/post/add`, payload, {
          headers: {
@@ -60,7 +64,7 @@ function* addPost({payload}) {
    }
 }
 
-function* uploadPostImage({payload}) {
+function* uploadPostImage({ payload }) {
    try {
       const response = yield instance.post(`/auth/post/upload/${payload.id}`, payload.formData, {
          headers: {
@@ -77,7 +81,7 @@ function* uploadPostImage({payload}) {
    }
 }
 
-function* likePost({payload}) {
+function* likePost({ payload }) {
    try {
       const response = yield instance({
          method: "post",
@@ -96,10 +100,10 @@ function* likePost({payload}) {
 
 function* getPostById({payload}) {
    try {
-      console.log(payload)
+
       const response = yield instance({
          method: "get",
-         url: `/guest/post/get${payload}`,
+         url: `/guest/post/get/${payload}`,
       })
 
       if (response.status === 200) {
@@ -112,7 +116,7 @@ function* getPostById({payload}) {
    }
 }
 
-function* getUserPosts({payload}) {
+function* getUserPosts({ payload }) {
    try {
       const response = yield instance({
          method: "get",
@@ -128,7 +132,7 @@ function* getUserPosts({payload}) {
    }
 }
 
-function* getUserLikedPosts({payload}) {
+function* getUserLikedPosts({ payload }) {
    try {
       const response = yield instance({
          method: "get",
@@ -144,7 +148,7 @@ function* getUserLikedPosts({payload}) {
    }
 }
 
-function* editPost({payload}) {
+function* editPost({ payload }) {
    try {
       const response = yield instance({
          method: "put",
@@ -161,7 +165,7 @@ function* editPost({payload}) {
    }
 }
 
-function* deletePost({payload}) {
+function* deletePost({ payload }) {
    try {
       const response = yield instance({
          method: "delete",

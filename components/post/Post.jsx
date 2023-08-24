@@ -1,13 +1,12 @@
 "use client"
-import {useDispatch, useSelector} from "react-redux";
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
-import {deletePostsRequest, editPostsRequest, likePostsRequest} from "../../redux/post/actions";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { deletePostsRequest, editPostsRequest, getPostByIdRequest, likePostsRequest } from "../../redux/post/actions";
 import {
    Avatar,
    Badge,
    Card,
-   Empty,
    Layout,
    Space,
    Typography,
@@ -16,33 +15,34 @@ import {
    Popover,
    Form,
    Image,
-   Popconfirm
+   notification
 } from "antd";
 import {
    CloseOutlined,
    CommentOutlined,
    DashOutlined,
    DeleteOutlined,
-   EditOutlined, ExclamationCircleOutlined,
-   LikeOutlined
+   EditOutlined,
+   ExclamationCircleOutlined,
+   LikeOutlined,
 } from "@ant-design/icons";
 import contentStyle from "../../theme/contentStyle";
-import {getUserRequest} from "../../redux/auth/actions";
+import { getUserRequest } from "../../redux/auth/actions";
 import checkTime from "../../checkTime/checkTime";
-import {getCommentsRequest} from "../../redux/comment/actions";
+import { getCommentsRequest } from "../../redux/comment/actions";
 import AddComment from "../comment/AddComment";
 import Comments from "../comment/Comments";
-import {usePrevious} from "@react-hooks-library/core";
+import { usePrevious } from "@react-hooks-library/core";
 import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
+import CardSkeleton from "../cardSkeleton/CardSkeleton";
 
-const {confirm} = Modal;
+const { confirm } = Modal;
+const { Meta } = Card;
+const { Text } = Typography;
+const { Content } = Layout;
 
-const {Meta} = Card;
-const {Text} = Typography;
-const {Content} = Layout;
-
-export default function PostPage() {
+export default function PostPage({ id }) {
    const {
       user
    } = useSelector(state => state.auth);
@@ -51,7 +51,8 @@ export default function PostPage() {
       commentCount,
       isEditPostsSuccess,
       updatedPost,
-      isDeletePostsSuccess
+      isDeletePostsSuccess,
+      isGetPostByIdSuccess
    } = useSelector(state => state.posts);
    const {
       isGetCommentsSuccess,
@@ -68,24 +69,27 @@ export default function PostPage() {
    const [form] = Form.useForm();
    const formRef = React.useRef(null);
    const prevEditPostsSuccess = usePrevious(isEditPostsSuccess);
+   const prevGetPostSuccess = usePrevious(isGetPostByIdSuccess);
    const prevDeleteSuccess = usePrevious(isDeletePostsSuccess);
-
    const router = useRouter();
 
-   useEffect(() => {
-      setLike(currPost?.likes);
-   }, [currPost?.likes]);
-
 
    useEffect(() => {
-      if (currPost?.id) {
-         dispatch(getCommentsRequest({postId: currPost?.id, parentId: null}))
+      dispatch(getPostByIdRequest(id));
+   }, [dispatch, id]);
+
+   useEffect(() => {
+      if (isGetPostByIdSuccess && prevGetPostSuccess === false && post) {
+         setPost(post)
+         setLike(post.likes);
+         dispatch(getCommentsRequest({postId: post?.id, parentId: null}))
       }
-   }, [dispatch, currPost?.id])
+   }, [dispatch, isGetPostByIdSuccess, post, prevGetPostSuccess]);
+
 
    useEffect(() => {
       if (isGetCommentsSuccess && prevGetCommentSuccess === false) {
-         setComment(comments)
+         setComment(comments);
       }
    }, [comments, isGetCommentsSuccess, prevGetCommentSuccess]);
 
@@ -103,12 +107,16 @@ export default function PostPage() {
          router.replace(`/${updatedPost.id}`);
          setPost({...currPost, ...updatedPost});
          toggleModal(false);
+         notification["success"]({
+            duration: 3,
+            description: "Post was Updated"
+         });
       }
    }, [currPost, isEditPostsSuccess, prevEditPostsSuccess, router, updatedPost]);
 
    useEffect(() => {
       if (isDeletePostsSuccess && prevDeleteSuccess === false) {
-         router.replace("/")
+         router.replace("/");
       }
    }, [isDeletePostsSuccess, prevDeleteSuccess, router]);
 
@@ -118,25 +126,25 @@ export default function PostPage() {
 
    const likePost = () => {
       if (user?.id) {
-         dispatch(likePostsRequest(currPost.id))
+         dispatch(likePostsRequest(currPost.id));
          if (likes.find(elem => elem.id === user?.id)) {
-            setLike(likes.filter(elem => elem.id !== user.id))
+            setLike(likes.filter(elem => elem.id !== user.id));
          } else {
-            setLike([...likes, user])
+            setLike([...likes, user]);
          }
       } else {
-         router.replace("/signin")
+         router.replace("/signin");
       }
-   }
+   };
 
    const goToProfile = () => {
-      router.replace(`/user/${currPost?.owner?.id}`)
-   }
+      router.replace(`/user/${currPost?.owner?.id}`);
+   };
 
 
    const toggleModal = (show) => {
       setIsEditModalOpen(show);
-   }
+   };
 
    const editPost = () => {
       form
@@ -147,9 +155,9 @@ export default function PostPage() {
                id: currPost.id,
                data: values
             }))
-            return values
+            return values;
          })
-   }
+   };
 
    const showConfirm = () => {
       setShow(false);
@@ -161,6 +169,7 @@ export default function PostPage() {
          cancelText: "No",
          onOk() {
             dispatch(deletePostsRequest(currPost.id));
+            router.replace("/");
          }
       });
    };
@@ -170,17 +179,16 @@ export default function PostPage() {
          style={contentStyle}
       >
          {
-            currPost ? (
+            isGetPostByIdSuccess ? (
                <>
                   <Card
                      style={{
                         width: "100%",
                         marginTop: "20px",
                         textAlign: "left",
-                        padding: "40px 0"
                      }}
                      title={
-                        <Space style={{textAlign: "left"}}>
+                        <Space style={{textAlign: "left", margin: "10px 0"}}>
                            <Avatar onClick={goToProfile} style={{cursor: "pointer"}} size="large"
                                    src={`http://localhost:3001/${currPost?.owner?.avatar}`}/>
                            <div>
@@ -307,8 +315,9 @@ export default function PostPage() {
                   </Space>
                   <Modal title="All likes" open={isModalOpen}
                          closeIcon={<CloseOutlined onClick={() => showModal(false)}/>}
+                         onCancel={() => showModal(false)}
                          destroyOnClose={true} footer={null}>
-                     {currPost?.likes?.map(user => (
+                     {likes.map(user => (
                         <Card
                            key={user?.id}
                         >
@@ -357,7 +366,7 @@ export default function PostPage() {
                   </Modal>
                </>
             ) : (
-               <Empty/>
+               <CardSkeleton />
             )
          }
 

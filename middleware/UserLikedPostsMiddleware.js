@@ -1,13 +1,11 @@
 "use client"
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { Content } from "antd/es/layout/layout";
 import contentStyle from "../theme/contentStyle";
-import { Spin } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
-import { getUserLikedPostsRequest } from "../redux/post/actions";
 import { useDispatch, useSelector } from "react-redux";
-import {getUserRequest} from "../redux/auth/actions";
+import { getUserRequest } from "../redux/auth/actions";
+import CardSkeleton from "../components/cardSkeleton/CardSkeleton";
 
 const UserLikedPostMiddleware = ({children}) => {
    const router = useRouter();
@@ -20,9 +18,9 @@ const UserLikedPostMiddleware = ({children}) => {
 
    useEffect(() => {
       if (!user) {
-         dispatch(getUserRequest())
+         dispatch(getUserRequest());
       }
-   }, [dispatch, user])
+   }, [dispatch, user]);
 
    if (isGetUserFailure) {
       return router.back();
@@ -31,9 +29,9 @@ const UserLikedPostMiddleware = ({children}) => {
    } else {
       return (
          <Content style={contentStyle}>
-            <Spin indicator={<LoadingOutlined style={{fontSize: 24}} spin/>}/>
+            <CardSkeleton />
          </Content>
-      )
+      );
    }
 };
 

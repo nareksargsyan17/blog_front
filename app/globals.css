@@ -22,3 +22,7 @@
 .comments > .ant-space-item:first-child {
     width: 100%;
 }
+
+.share-post > *:nth-child(2) {
+    width: 100%;
+}

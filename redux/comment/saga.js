@@ -1,12 +1,14 @@
 import {
-  addCommentsFailure, addCommentsRequest,
+  addCommentsFailure,
+  addCommentsRequest,
   addCommentsSuccess,
-  getCommentsFailure, getCommentsRequest,
+  getCommentsFailure,
+  getCommentsRequest,
   getCommentsSuccess
 
-} from './actions'
-import {instance} from "../../configs/axiosInstance";
-import {put, takeLatest} from "redux-saga/effects";
+} from './actions';
+import { instance } from "../../configs/axiosInstance";
+import { put, takeLatest } from "redux-saga/effects";
 
 
 function* getComments({ payload }) {
@@ -15,6 +17,7 @@ function* getComments({ payload }) {
       method: "get",
       url: `/guest/comment/get/${payload.postId}?parent=${payload.parentId}`,
     })
+
     if (response.status === 200) {
       yield put(getCommentsSuccess(response.data.data));
     } else {

@@ -24,19 +24,19 @@ import { put, takeLatest } from "redux-saga/effects";
 
 function* registration(action) {
   try {
-    console.log(action)
+
     const response = yield instance({
       method: "post",
       url: "/guest/user/registration",
       data : action.payload
     })
+
     if (response.status === 200) {
       yield put(postRegistrationSuccess(response.data.successMessage));
     } else {
       yield put(postRegistrationFailure(response.data.message));
     }
   } catch (error) {
-    console.log('error---', error);
       yield put(postRegistrationFailure(error.response.data.message || error.message));
   }
 }
@@ -45,13 +45,12 @@ function* registration(action) {
 
 function* login(action) {
   try {
-    console.log(action)
     const response = yield instance({
       method: "post",
       url: "/guest/user/login",
       data : action.payload
     })
-    console.log(response)
+
     if (response.status === 200) {
       yield put(postLoginSuccess(response.data.data));
     } else {
@@ -102,7 +101,7 @@ function* getUser() {
 function* editUser({ payload }) {
   try {
     const response = yield instance({
-      method: "patch",
+      method: "put",
       url: "/auth/user/edit",
       data: payload
     })

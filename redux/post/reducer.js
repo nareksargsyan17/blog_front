@@ -1,4 +1,4 @@
-import {handleActions} from "redux-actions";
+import { handleActions } from "redux-actions";
 import {
    getPostsRequest,
    getPostsSuccess,
@@ -27,7 +27,8 @@ import {
    editPostsRequest,
    editPostsFailure,
    deletePostsRequest,
-   deletePostsSuccess, deletePostsFailure
+   deletePostsSuccess,
+   deletePostsFailure
 } from './actions'
 
 const defaultState = {
@@ -58,7 +59,7 @@ const defaultState = {
    isDeletePostsRequest: false,
    isDeletePostsSuccess: false,
    isDeletePostsFailure: false,
-   postsData: [],
+   postsData: null,
    successMessage: "",
    errorMessage: '',
    addedPost: null,

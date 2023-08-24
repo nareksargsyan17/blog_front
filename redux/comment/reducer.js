@@ -1,7 +1,9 @@
-import {handleActions} from "redux-actions";
+import { handleActions } from "redux-actions";
 import {
     addCommentsFailure,
-    addCommentsRequest, addCommentsSuccess, changeCommentsList,
+    addCommentsRequest,
+   addCommentsSuccess,
+   changeCommentsList,
     getCommentsFailure,
     getCommentsRequest,
     getCommentsSuccess,

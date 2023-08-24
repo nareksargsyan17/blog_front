@@ -1,29 +1,39 @@
-import {Avatar, Badge, Card, Typography, Space, Button, Popover, Form, Image, notification, Progress} from "antd";
+import {
+   Avatar,
+   Badge,
+   Card,
+   Typography,
+   Space,
+   Button,
+   Popover,
+   Form,
+   Image,
+   Modal
+} from "antd";
 import {
    CommentOutlined,
-   DashOutlined, EditOutlined,
+   DashOutlined,
+   DeleteOutlined,
+   EditOutlined,
+   ExclamationCircleOutlined,
    LikeOutlined,
 } from "@ant-design/icons";
-import {useDispatch, useSelector} from "react-redux";
-import {editPostsRequest, likePostsRequest} from "../../redux/post/actions";
-import React, {useEffect, useState} from "react";
-import {useRouter} from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import { deletePostsRequest, editPostsRequest, likePostsRequest } from "../../redux/post/actions";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import checkTime from "../../checkTime/checkTime";
 import Input from "antd/es/input/Input";
 import TextArea from "antd/es/input/TextArea";
-import Modal from "antd/es/modal/Modal";
 
-const {Meta} = Card;
-const {Text} = Typography;
+const { confirm } = Modal;
+const { Meta } = Card;
+const { Text } = Typography;
 
 export default function Posts({post}) {
    const {
       user
    } = useSelector(state => state.auth);
-   const {
-      updatedPost,
-      isEditPostsSuccess
-   } = useSelector(state => state.posts);
    const dispatch = useDispatch();
    const router = useRouter();
    const [form] = Form.useForm();
@@ -39,19 +49,20 @@ export default function Posts({post}) {
 
    const likePost = () => {
       if (user?.id) {
-         dispatch(likePostsRequest(post.id))
+         dispatch(likePostsRequest(post.id));
          if (likes.find(elem => elem.id === user?.id)) {
-            setLike(likes.filter(elem => elem.id !== user.id))
+            setLike(likes.filter(elem => elem.id !== user.id));
          } else {
-            setLike([...likes, user])
+            setLike([...likes, user]);
          }
       } else if (!user) {
-         router.replace("/signin")
+         router.replace("/signin");
       }
-   }
+   };
 
    const goToProfile = () => {
-      router.replace(`/user/${post?.owner?.id}`)
+      window.scrollTo(0, 0);
+      router.push(`/user/${post?.owner?.id}`);
    }
 
    const toggleModal = (show) => {
@@ -66,10 +77,25 @@ export default function Posts({post}) {
             dispatch(editPostsRequest({
                id: post.id,
                data: values
-            }))
-            return values
+            }));
+            return values;
          })
    }
+
+   const showConfirm = () => {
+      setShow(false);
+      confirm({
+         icon: <ExclamationCircleOutlined/>,
+         title: "Delete the Post",
+         content: "Are you sure to delete this post?",
+         okText: "Yes",
+         cancelText: "No",
+         onOk() {
+            dispatch(deletePostsRequest(post.id));
+            router.replace("/");
+         }
+      });
+   };
 
    return (
       <>
@@ -80,15 +106,24 @@ export default function Posts({post}) {
                textAlign: "left",
             }}
             title={
-               <Space style={{textAlign: "left", position: "relative", width: "100%"}}>
-                  <Avatar onClick={goToProfile} style={{cursor: "pointer"}} size="large"
-                          src={`http://localhost:3001/${post.owner.avatar}`}/>
+               <Space style={{textAlign: "left", position: "relative", width: "100%", margin: "10px 0"}}>
+                  <Avatar
+                     onClick={goToProfile}
+                     style={{cursor: "pointer"}}
+                     size="large"
+                     src={`http://localhost:3001/${post.owner.avatar}`}
+                  />
                   <div>
-                     <Text onClick={goToProfile} style={{
-                        display: "block",
-                        fontSize: "18px",
-                        cursor: "pointer"
-                     }}>{post.owner.firstName} {post.owner.lastName}</Text>
+                     <Text
+                        onClick={goToProfile}
+                        style={{
+                           display: "block",
+                           fontSize: "18px",
+                           cursor: "pointer"
+                        }}
+                     >
+                        {post.owner.firstName} {post.owner.lastName}
+                     </Text>
                      <Text style={{fontSize: "9px"}}>{checkTime((new Date() - new Date(post.createdAt)))}</Text>
                   </div>
                   {
@@ -110,6 +145,20 @@ export default function Posts({post}) {
                               >
                                  <EditOutlined/>
                                  <Text style={{marginLeft: "20px"}}>Edit</Text>
+                              </Button>
+                              <Button
+                                 onClick={showConfirm}
+                                 size="small"
+                                 style={{
+                                    width: "200px",
+                                    display: "flex",
+                                    justifyContent: "left",
+                                    alignItems: "center",
+                                    padding: "20px"
+                                 }}
+                              >
+                                 <DeleteOutlined/>
+                                 <Text style={{marginLeft: "20px"}}>Delete</Text>
                               </Button>
                            </Space>}
                            trigger="click"
