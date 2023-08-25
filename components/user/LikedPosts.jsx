@@ -20,9 +20,9 @@ export default function LikedPosts() {
    const {
       user
    } = useSelector(state => state.auth);
+   const dispatch = useDispatch();
    const [page, setPage] = useState(1);
    const [likedPosts, setPosts] = useState([]);
-   const dispatch = useDispatch();
    const prevGetLikedPostsSuccess = usePrevious(isGetUserLikedPostsSuccess);
 
    useEffect(() => {
@@ -31,14 +31,14 @@ export default function LikedPosts() {
          page
       }))
    }, [dispatch]);
-   
+
    useEffect(() => {
       if (isGetUserLikedPostsSuccess && prevGetLikedPostsSuccess === false) {
          setPosts([...likedPosts, ...userLikedPosts]);
          setPage(page + 1);
       }
    }, [isGetUserLikedPostsSuccess, likedPosts, page, prevGetLikedPostsSuccess, userLikedPosts])
-   
+
    const getData = () => {
       dispatch(getUserLikedPostsRequest({
          id: user?.id,

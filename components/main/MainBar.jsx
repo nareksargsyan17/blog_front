@@ -1,5 +1,5 @@
 "use client"
-import {Empty, notification, Spin} from "antd";
+import { Empty, notification, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPostsRequest } from "../../redux/post/actions";
@@ -31,13 +31,13 @@ export default function MainBar() {
       isGetUserRequest
    } = useSelector(state => state.auth);
    const dispatch = useDispatch();
-   const prevGetSuccess = usePrevious(isGetPostsSuccess);
+   const router = useRouter();
    const [posts, setPosts] = useState([]);
    const [token, setToken] = useState("");
    const [page, setPage] = useState(2);
    const prevEditPostsSuccess = usePrevious(isEditPostsSuccess);
+   const prevGetSuccess = usePrevious(isGetPostsSuccess);
    const prevDeleteSuccess = usePrevious(isDeletePostsSuccess);
-   const router = useRouter();
 
    useEffect(() => {
       if (posts.length === 0) {

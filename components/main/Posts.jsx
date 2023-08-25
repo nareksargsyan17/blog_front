@@ -40,7 +40,6 @@ export default function Posts({post}) {
    const [likes, setLike] = useState([]);
    const [show, setShow] = useState(false);
    const [isModalOpen, setIsModalOpen] = useState(false);
-   const formRef = React.useRef(null);
 
    useEffect(() => {
       setLike(post.likes);
@@ -235,7 +234,6 @@ export default function Posts({post}) {
                form={form}
                name="form_in_modal"
                layout="vertical"
-               ref={formRef}
                initialValues={{
                   title: post?.title,
                   content: post?.content

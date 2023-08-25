@@ -1,5 +1,5 @@
 "use client"
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Content } from "antd/es/layout/layout";
 import contentStyle from "../theme/contentStyle";
@@ -14,11 +14,10 @@ const UserPostMiddleware = ({children}) => {
       isGetUserByIdFailure
    } = useSelector(state => state.auth)
    const dispatch = useDispatch();
-   const pathName = usePathname();
 
    useEffect(() => {
-      dispatch(getUserByIdRequest(pathName.split("/")[2]));
-   }, [dispatch, pathName]);
+      dispatch(getUserByIdRequest(children.props.childProp.current[1].props.id));
+   }, [children, dispatch]);
 
    if (isGetUserByIdFailure) {
       return router.back();

@@ -59,7 +59,7 @@ export default function PostPage({ id }) {
       comments
    } = useSelector(state => state.comments);
    const dispatch = useDispatch();
-   const prevGetCommentSuccess = usePrevious(isGetCommentsSuccess);
+   const router = useRouter();
    const [likes, setLike] = useState([]);
    const [allComments, setComment] = useState([]);
    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -67,11 +67,10 @@ export default function PostPage({ id }) {
    const [show, setShow] = useState(false);
    const [currPost, setPost] = useState(post);
    const [form] = Form.useForm();
-   const formRef = React.useRef(null);
+   const prevGetCommentSuccess = usePrevious(isGetCommentsSuccess);
    const prevEditPostsSuccess = usePrevious(isEditPostsSuccess);
    const prevGetPostSuccess = usePrevious(isGetPostByIdSuccess);
    const prevDeleteSuccess = usePrevious(isDeletePostsSuccess);
-   const router = useRouter();
 
 
    useEffect(() => {
@@ -342,7 +341,6 @@ export default function PostPage({ id }) {
                         form={form}
                         name="form_in_modal"
                         layout="vertical"
-                        ref={formRef}
                         initialValues={{
                            title: currPost?.title,
                            content: currPost?.content

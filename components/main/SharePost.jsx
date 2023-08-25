@@ -21,12 +21,10 @@ export default function SharePost({setPosts}) {
    } = useSelector(state => state.posts);
    const dispatch = useDispatch();
    const [form] = Form.useForm();
-   const prevAddSuccess = usePrevious(isAddPostsSuccess);
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [postValues, setValues] = useState({});
-   // TODO
-   const [isDone, setDone] = useState("fail");
-   const formRef = React.useRef(null);
+   const [isDone, setDone] = useState(false);
+   const prevAddSuccess = usePrevious(isAddPostsSuccess);
    let timer;
 
    useEffect(() => {
@@ -54,7 +52,7 @@ export default function SharePost({setPosts}) {
    };
 
    const beforeUpload = () => {
-      setDone("ok");
+      setDone(true);
       return false;
    };
 
@@ -66,7 +64,7 @@ export default function SharePost({setPosts}) {
             let percent = 0;
             const key = 'updatable';
             setValues({...values, image: values.image.file});
-            setDone("fail");
+            setDone(false);
             timer = setInterval(() => {
                percent++;
                notification.info({
@@ -135,7 +133,7 @@ export default function SharePost({setPosts}) {
          <Modal
             title="Share Post"
             style={{textAlign: "center"}}
-            okButtonProps={{disabled: isDone !== "ok"}}
+            okButtonProps={{disabled: !isDone}}
             open={isModalOpen}
             okText="Post"
             onOk={onSharePost}
@@ -144,7 +142,6 @@ export default function SharePost({setPosts}) {
                form={form}
                name="form_in_modal"
                layout="vertical"
-               ref={formRef}
             >
                <Form.Item
                   name="title"
@@ -168,20 +165,23 @@ export default function SharePost({setPosts}) {
                >
                   <Upload
                      name="avatar"
-                     onRemove={(file) => {
+                     onRemove={() => {
                         setValues({...postValues, image: null});
-                        setDone("fail");
+                        setDone(false);
                      }} maxCount={1} beforeUpload={(e) => beforeUpload(e)} listType="picture-card">
-                     {isDone === "ok" ? null : <div>
-                        <PlusOutlined/>
-                        <div
-                           style={{
-                              marginTop: 8,
-                           }}
-                        >
-                           Upload
-                        </div>
-                     </div>
+                     {
+                        !isDone ? (
+                           <div>
+                              <PlusOutlined/>
+                              <div
+                                 style={{
+                                    marginTop: 8,
+                                 }}
+                              >
+                                 Upload
+                              </div>
+                           </div>
+                        ) : null
                      }
                   </Upload>
                </Form.Item>
