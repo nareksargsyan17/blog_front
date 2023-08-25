@@ -69,7 +69,7 @@ export default function RegistrationBar() {
                            </Button>
                            <Button
                               onClick={() => {
-                                 router.push(`/user/likes`, {scroll: false});
+                                 router.push(`/user/likes`,  { locale: "en"});
                               }}
                               size="small"
                               style={{

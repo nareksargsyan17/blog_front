@@ -14,6 +14,7 @@ const PostMiddleWare = ({children}) => {
    const dispatch = useDispatch();
 
    useEffect(() => {
+      console.log(children)
       dispatch(getPostByIdRequest(children.props.childProp.current[1].props.id));
    }, [children, dispatch]);
 

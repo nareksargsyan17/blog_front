@@ -42,10 +42,10 @@ export default function SharePost({setPosts}) {
             oldPosts.unshift(addedPost);
             return [...oldPosts];
          });
-         formRef.current?.resetFields();
+         form.resetFields();
          setIsModalOpen(false);
       }
-   }, [addedPost, dispatch, isAddPostsSuccess, postValues, prevAddSuccess, setPosts]);
+   }, [addedPost, dispatch, form, isAddPostsSuccess, postValues, prevAddSuccess, setPosts]);
 
    const toggleModal = (show) => {
       setIsModalOpen(show);

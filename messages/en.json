@@ -1,0 +1,12 @@
+{
+   "Likes": {
+      "header": "Likes",
+      "title": "Liked Posts"
+   },
+   "Blog": {
+      "header": "Blog"
+   },
+   "Profile": {
+      "header": "Profile"
+   }
+}

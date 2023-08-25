@@ -1,5 +1,5 @@
 "use client"
-import UserLikedPostMiddleware from "../../../middleware/UserLikedPostsMiddleware";
+import UserLikedPostMiddleware from "../../../../middleware/UserLikedPostsMiddleware";
 
 export default function Layout({children}) {
    return <UserLikedPostMiddleware>

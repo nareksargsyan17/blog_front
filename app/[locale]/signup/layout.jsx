@@ -1,6 +1,6 @@
 "use client"
 
-import SignMiddleware from "../../middleware/SignMiddleware";
+import SignMiddleware from "../../../middleware/SignMiddleware";
 
 
 export default function Layout({children}) {

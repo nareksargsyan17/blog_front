@@ -9,7 +9,7 @@ import Posts from "../main/Posts";
 import CardSkeleton from "../cardSkeleton/CardSkeleton";
 import {usePrevious} from "@react-hooks-library/core";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import {useTranslations} from 'next-intl';
 const { Title } = Typography;
 
 export default function LikedPosts() {
@@ -24,6 +24,7 @@ export default function LikedPosts() {
    const [page, setPage] = useState(1);
    const [likedPosts, setPosts] = useState([]);
    const prevGetLikedPostsSuccess = usePrevious(isGetUserLikedPostsSuccess);
+   const likes = useTranslations("Likes");
 
    useEffect(() => {
       dispatch(getUserLikedPostsRequest({
@@ -51,7 +52,7 @@ export default function LikedPosts() {
          {
             userLikedPosts ? (
                <>
-                  <Title level={4} style={{textAlign: "center",}}>Liked Posts</Title>
+                  <Title level={4} style={{textAlign: "center"}}>{likes("title")}</Title>
                   {
                      likedPosts?.length > 0 ? (
                         <InfiniteScroll

@@ -1,5 +1,4 @@
-"use client"
-import PostMiddleware from "../../middleware/PostMiddleware";
+import PostMiddleware from "../../../middleware/PostMiddleware";
 
 export default function Layout({children}) {
   return <PostMiddleware>

@@ -1,0 +1,12 @@
+{
+  "Likes": {
+    "header": "Gustos",
+    "title": "Publicaciones que le gustan"
+  },
+  "Blog": {
+    "header": "Servicios"
+  },
+  "Profile": {
+    "header": "Profile"
+  }
+}

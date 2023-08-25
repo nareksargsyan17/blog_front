@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getPostsRequest } from "../../redux/post/actions";
 import Posts from "./Posts";
-import Error from "../../app/error";
+import Error from "../../app/[locale]/error";
 import { ErrorBoundary } from "react-error-boundary";
 import contentStyle from "../../theme/contentStyle";
 import SharePost from "./SharePost";

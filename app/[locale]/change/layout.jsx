@@ -1,6 +1,6 @@
 "use client"
 
-import UserMiddleware from "../../middleware/UserMiddleware";
+import UserMiddleware from "../../../middleware/UserMiddleware";
 
 export default function Layout({children}) {
     return <UserMiddleware>
